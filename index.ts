@@ -49,7 +49,6 @@ interface TweetRequest extends DraftRequest {
 // =========================================
 const STATE_PATH = "./state.json";
 
-
 // =========================================
 // Embedding Helpers
 // =========================================
@@ -579,62 +578,67 @@ app.post(
 //   schedule.scheduleJob("* */4 * * *", scheduledScamWatcher);
 // }
 //  */
-const bot = new Telegraf(process.env.BOT_TOKEN!);
-
-bot.start(async (ctx) => {
+async function startServer() {
+  const bot = new Telegraf(process.env.BOT_TOKEN!);
   await loadKB();
-  const result = await genAI.models.generateContent({
-    model: aiModel,
-    contents: "Welcome the user and ask what they want to tweet about today",
-    config: {
-      thinkingConfig: {
-        thinkingBudget: 0, // Disables thinking
+  bot.start(async (ctx) => {
+    await loadKB();
+    const result = await genAI.models.generateContent({
+      model: aiModel,
+      contents: "Welcome the user and ask what they want to tweet about today",
+      config: {
+        thinkingConfig: {
+          thinkingBudget: 0, // Disables thinking
+        },
+        systemInstruction:
+          "You are an AI Agent that speaks in a voice of ancient scripture: solemn, witty and wise.",
       },
-      systemInstruction:
-        "You are an AI Agent that speaks in a voice of ancient scripture: solemn, witty and wise.",
-    },
+    });
+    ctx.reply(result.text ?? "Hello");
   });
-  ctx.reply(result.text ?? "Hello");
-});
 
-bot.command("quit", async (ctx) => {
-  // Explicit usage
-  await ctx.telegram.leaveChat(ctx.message.chat.id);
+  bot.command("quit", async (ctx) => {
+    // Explicit usage
+    await ctx.telegram.leaveChat(ctx.message.chat.id);
 
-  // Using context shortcut
-  await ctx.leaveChat();
-});
+    // Using context shortcut
+    await ctx.leaveChat();
+  });
 
-bot.on(message("text"), async (ctx) => {
-  console.log("here");
-  if (ctx.message.text.startsWith("/tweet ")) {
-    const message = ctx.message.text;
-    console.log(message);
-    const prompt = message.split("/tweet ")[1];
-    console.log(prompt);
-    const text = await writeInVoice(prompt, false);
-    await ctx.reply(text);
-  }
-  if (ctx.message.text.startsWith("/reply ")) {
-    const message = ctx.message.text;
-    console.log(message);
-    const prompt = message.split("/reply ")[1];
-    console.log(prompt);
-    const text = await writeInVoice(prompt, true);
-    await ctx.reply(text);
-  }
-});
+  bot.on(message("text"), async (ctx) => {
+    console.log("here");
+    if (ctx.message.text.startsWith("/tweet ")) {
+      const message = ctx.message.text;
+      console.log(message);
+      const prompt = message.split("/tweet ")[1];
+      console.log(prompt);
+      const text = await writeInVoice(prompt, false);
+      await ctx.reply(text);
+    }
+    if (ctx.message.text.startsWith("/reply ")) {
+      const message = ctx.message.text;
+      console.log(message);
+      const prompt = message.split("/reply ")[1];
+      console.log(prompt);
+      const text = await writeInVoice(prompt, true);
+      await ctx.reply(text);
+    }
+  });
 
-bot.on("callback_query", async (ctx) => {
-  // Explicit usage
-  await ctx.telegram.answerCbQuery(ctx.callbackQuery.id);
+  bot.on("callback_query", async (ctx) => {
+    // Explicit usage
+    await ctx.telegram.answerCbQuery(ctx.callbackQuery.id);
 
-  // Using context shortcut
-  await ctx.answerCbQuery();
-});
+    // Using context shortcut
+    await ctx.answerCbQuery();
+  });
 
-bot.launch();
+  bot.launch();
 
-// Enable graceful stop
-process.once("SIGINT", () => bot.stop("SIGINT"));
-process.once("SIGTERM", () => bot.stop("SIGTERM"));
+  // Enable graceful stop
+  process.once("SIGINT", () => bot.stop("SIGINT"));
+  process.once("SIGTERM", () => bot.stop("SIGTERM"));
+}
+
+startServer()
+  .catch((e) => console.error("Startup error:", e));

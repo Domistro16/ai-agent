@@ -1,0 +1,32 @@
+[
+    {
+        "source": "Crypto Basics",
+        "topic": "What is Bitcoin?",
+        "text": "Bitcoin is a decentralized digital currency that operates on a peer-to-peer network without the need for intermediaries such as banks."
+    },
+    {
+        "source": "Crypto Basics",
+        "topic": "What is HODL?",
+        "text": "HODL is a term in crypto culture meaning to hold onto your coins long-term despite volatility, based on the belief in future gains."
+    },
+    {
+        "source": "DeFi",
+        "topic": "Yield Farming",
+        "text": "Yield farming involves depositing crypto into decentralized finance protocols to earn rewards, often in the form of governance tokens."
+    },
+    {
+        "source": "NFTs",
+        "topic": "What are NFTs?",
+        "text": "NFTs, or Non-Fungible Tokens, are unique digital assets stored on a blockchain that represent ownership of digital or physical items."
+    },
+    {
+        "source": "Security",
+        "topic": "Wallet Safety",
+        "text": "Never share your private keys. Use hardware wallets or multi-signature wallets for better security against hacks."
+    },
+    {
+        "source": "Web3 Culture",
+        "topic": "Decentralization",
+        "text": "Decentralization shifts power from centralized authorities to distributed networks, giving individuals more control and reducing censorship."
+    }
+]
